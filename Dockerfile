@@ -33,7 +33,8 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
     python3.12-venv \
     python3-pip && \
     ln -sf /usr/bin/python3.12 /usr/bin/python3 && \
-    ln -sf /usr/bin/python3 /usr/bin/python
+    ln -sf /usr/bin/python3 /usr/bin/python && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 
 # 安装Node.js和npm（Hardhat依赖）
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
@@ -53,12 +54,8 @@ RUN npm install -g hardhat
 # 安装常用的Hardhat插件
 RUN npm install -g @nomicfoundation/hardhat-toolbox @nomicfoundation/hardhat-verify
 
-# 安装Foundry
-RUN curl -L https://foundry.paradigm.xyz | bash && \
-    /root/.foundry/bin/foundryup
-
 # 设置环境变量
-ENV PATH="/usr/local/go/bin:/root/go/bin:/root/.foundry/bin:${PATH}"
+ENV PATH="/usr/local/go/bin:/root/go/bin:$PATH"
 ENV GOPATH=/root/go
 
 # 验证安装
@@ -68,8 +65,17 @@ RUN go version && \
     npm --version && \
     tsc --version && \
     solc --version && \
-    forge --version && \
     echo "Hardhat version: $(hardhat --version)"
+
+# 安装Foundry（以太坊开发工具集）
+RUN curl -L https://foundry.paradigm.xyz | bash && \
+    /root/.foundry/bin/foundryup
+
+# 将Foundry添加到PATH环境变量
+ENV PATH="/root/.foundry/bin:${PATH}"
+
+# 验证Foundry安装
+RUN forge --version && cast --version && anvil --version
 
 # 设置默认命令
 CMD ["/bin/bash"]
