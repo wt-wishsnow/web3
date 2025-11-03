@@ -1,0 +1,52 @@
+{
+    "name": "一二哭唧唧",
+    "description": "可爱的小一二打王者被虐哭的样子。",
+    "external_url": "https://www.bilibili.com/video/BV1fb4y1L7Wi/?vd_source=f27b0a266bfb28dc64b2c2dfcf49deaf",
+    "image": "ipfs://bafkreibdjuwevskaag3wcp5rvgikscky5un3hn24ldx7mzdov3dajxjv3e",
+    "attributes": [
+        {
+            "trait_type": "基础形象",
+            "value": "小白熊崽儿"
+        },
+        {
+            "trait_type": "眼睛",
+            "value": "悲伤逆流成河"
+        },
+        {
+            "trait_type": "嘴巴",
+            "value": "哇哇大哭"
+        },
+        {
+            "trait_type": "游戏等级",
+            "value": 5
+        },
+        {
+            "trait_type": "心理承受力",
+            "value": 1.4
+        },
+        {
+            "trait_type": "当前状态",
+            "value": "破防大哭"
+        },
+        {
+            "display_type": "boost_number",
+            "trait_type": "水系战力",
+            "value": 40
+        },
+        {
+            "display_type": "boost_percentage",
+            "trait_type": "体力恢复",
+            "value": 10
+        },
+        {
+            "display_type": "number",
+            "trait_type": "世代",
+            "value": 2
+        },
+        {
+            "display_type": "date",
+            "trait_type": "破防时刻",
+            "value": 1717171200
+        }
+    ]
+}

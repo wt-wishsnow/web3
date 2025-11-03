@@ -5,25 +5,25 @@ import {Test} from "forge-std/Test.sol";
 import "./SimpleERC20.sol";
 
 /**
- * @title SimpleERC20Test
- * @dev Test contract for SimpleERC20 token using Hardhat + Forge Std
+ * @title SimpleERC20测试合约
+ * @dev 使用Hardhat + Forge Std对SimpleERC20代币进行测试
  */
 contract SimpleERC20Test is Test {
     SimpleERC20 public token;
 
-    // Test account addresses
+    /// @dev 测试账户地址
     address public owner = makeAddr("owner");
     address public user1 = makeAddr("user1");
     address public user2 = makeAddr("user2");
     address public spender = makeAddr("spender");
 
-    // Token constants
+    /// @dev  代币常量
     uint256 constant INITIAL_SUPPLY = 1000000;
     uint8 constant DECIMALS = 18;
     string constant NAME = "Test Token";
     string constant SYMBOL = "TEST";
 
-    // Re-stating the event in order to use it in the test
+    /// @dev  重新声明事件以便在测试中使用
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(
         address indexed owner,
@@ -33,29 +33,29 @@ contract SimpleERC20Test is Test {
     event Mint(address indexed to, uint256 value);
 
     /**
-     * @dev Setup function run before each test
+     * @dev 每个测试前运行的设置函数
      */
     function setUp() public {
-        // Deploy contract using owner address
+        // 使用owner地址部署合约
         vm.startPrank(owner);
         token = new SimpleERC20(NAME, SYMBOL, DECIMALS, INITIAL_SUPPLY);
         vm.stopPrank();
     }
 
     // =============================================
-    // Constructor Tests
+    // 构造函数测试
     // =============================================
 
     /**
-     * @dev Test constructor initialization
+     * @dev 测试构造函数初始化
      */
-    function testConstructorInitialization() public view {
-        // Verify token basic information
+    function test_ConstructorInitialization() public view {
+        // 验证代币基本信息
         assertEq(token.name(), NAME, "Token name should match");
         assertEq(token.symbol(), SYMBOL, "Token symbol should match");
         assertEq(token.decimals(), DECIMALS, "Decimals should match");
 
-        // Verify supply and ownership
+        // 验证供应量和所有权
         assertEq(
             token.totalSupply(),
             INITIAL_SUPPLY * (10 ** DECIMALS),
@@ -70,20 +70,20 @@ contract SimpleERC20Test is Test {
     }
 
     // =============================================
-    // Transfer Function Tests
+    // 转账功能测试
     // =============================================
 
     /**
-     * @dev Test normal transfer between users
+     * @dev 测试用户间正常转账
      */
-    function testTransfer() public {
+    function test_Transfer() public {
         uint256 transferAmount = 1000 * (10 ** DECIMALS);
 
-        // Execute transfer
+        // 执行转账
         vm.prank(owner);
         token.transfer(user1, transferAmount);
 
-        // Verify balance changes
+        // 验证余额变化
         assertEq(
             token.balanceOf(owner),
             (INITIAL_SUPPLY - 1000) * (10 ** DECIMALS),
@@ -97,56 +97,56 @@ contract SimpleERC20Test is Test {
     }
 
     /**
-     * @dev Test transfer event emission
+     * @dev 测试转账事件触发
      */
-    function testTransferEvent() public {
+    function test_TransferEvent() public {
         uint256 transferAmount = 500 * (10 ** DECIMALS);
 
-        // Expect Transfer event
+        // 期望Transfer事件
         vm.expectEmit(true, true, false, true);
         emit Transfer(owner, user1, transferAmount);
 
-        // Execute transfer
+        // 执行转账
         vm.prank(owner);
         token.transfer(user1, transferAmount);
     }
 
     /**
-     * @dev Test transfer with insufficient balance
+     * @dev 测试余额不足的转账
      */
-    function testTransferInsufficientBalance() public {
+    function test_TransferInsufficientBalance() public {
         uint256 excessiveAmount = (INITIAL_SUPPLY + 1000) * (10 ** DECIMALS);
 
-        // Expect transaction to revert
+        // 期望交易回滚
         vm.prank(owner);
         vm.expectRevert("ERC20: transfer amount exceeds balance");
         token.transfer(user1, excessiveAmount);
     }
 
     /**
-     * @dev Test transfer to zero address
+     * @dev 测试向零地址转账
      */
-    function testTransferToZeroAddress() public {
+    function test_TransferToZeroAddress() public {
         vm.prank(owner);
         vm.expectRevert("ERC20: transfer to the zero address");
         token.transfer(address(0), 1000);
     }
 
     // =============================================
-    // Approval Function Tests
+    // 授权功能测试
     // =============================================
 
     /**
-     * @dev Test approval functionality
+     * @dev 测试授权功能
      */
-    function testApprove() public {
+    function test_Approve() public {
         uint256 approveAmount = 5000 * (10 ** DECIMALS);
 
-        // Execute approval
+        // 执行授权
         vm.prank(owner);
         token.approve(spender, approveAmount);
 
-        // Verify allowance
+        // 验证授权额度
         assertEq(
             token.allowance(owner, spender),
             approveAmount,
@@ -155,36 +155,36 @@ contract SimpleERC20Test is Test {
     }
 
     /**
-     * @dev Test approval event emission
+     * @dev 测试授权事件触发
      */
-    function testApproveEvent() public {
+    function test_ApproveEvent() public {
         uint256 approveAmount = 3000 * (10 ** DECIMALS);
 
-        // Expect Approval event
+        // 期望Approval事件
         vm.expectEmit(true, true, false, true);
         emit Approval(owner, spender, approveAmount);
 
-        // Execute approval
+        // 执行授权
         vm.prank(owner);
         token.approve(spender, approveAmount);
     }
 
     /**
-     * @dev Test transferFrom functionality
+     * @dev 测试transferFrom功能
      */
-    function testTransferFrom() public {
+    function test_TransferFrom() public {
         uint256 approveAmount = 2000 * (10 ** DECIMALS);
         uint256 transferAmount = 1500 * (10 ** DECIMALS);
 
-        // Step 1: Approve
+        // 步骤1: 授权
         vm.prank(owner);
         token.approve(spender, approveAmount);
 
-        // Step 2: Transfer from
+        // 步骤2: 从授权中转账
         vm.prank(spender);
-        token.transfrom(owner, user1, transferAmount);
+        token.transferFrom(owner, user1, transferAmount);
 
-        // Verify results
+        // 验证结果
         assertEq(
             token.balanceOf(owner),
             (INITIAL_SUPPLY - 1500) * (10 ** DECIMALS),
@@ -203,37 +203,37 @@ contract SimpleERC20Test is Test {
     }
 
     /**
-     * @dev Test transferFrom with insufficient allowance
+     * @dev 测试授权额度不足的transferFrom
      */
-    function testTransferFromInsufficientAllowance() public {
+    function test_TransferFromInsufficientAllowance() public {
         uint256 approveAmount = 1000 * (10 ** DECIMALS);
         uint256 transferAmount = 1500 * (10 ** DECIMALS);
 
-        // Setup approval
+        // 设置授权
         vm.prank(owner);
         token.approve(spender, approveAmount);
 
-        // Expect transaction to revert
+        // 期望交易回滚
         vm.prank(spender);
         vm.expectRevert("ERC20: transfer amount exceeds allowance");
-        token.transfrom(owner, user1, transferAmount);
+        token.transferFrom(owner, user1, transferAmount);
     }
 
     // =============================================
-    // Mint Function Tests
+    // 铸币功能测试
     // =============================================
 
     /**
-     * @dev Test mint functionality by owner
+     * @dev 测试所有者铸币功能
      */
-    function testMint() public {
+    function test_Mint() public {
         uint256 mintAmount = 50000 * (10 ** DECIMALS);
 
-        // Execute mint
+        // 执行铸币
         vm.prank(owner);
         token.mint(user1, mintAmount);
 
-        // Verify mint results
+        // 验证铸币结果
         assertEq(
             token.balanceOf(user1),
             mintAmount,
@@ -247,40 +247,40 @@ contract SimpleERC20Test is Test {
     }
 
     /**
-     * @dev Test mint event emissions
+     * @dev 测试铸币事件触发
      */
-    function testMintEvent() public {
+    function test_MintEvent() public {
         uint256 mintAmount = 10000 * (10 ** DECIMALS);
 
-        // Expect Transfer event (from zero address)
+        // 期望Transfer事件（从零地址）
         vm.expectEmit(true, true, false, true);
         emit Transfer(address(0), user1, mintAmount);
 
-        // Expect Mint event
+        // 期望Mint事件
         vm.expectEmit(true, false, false, true);
         emit Mint(user1, mintAmount);
 
-        // Execute mint
+        // 执行铸币
         vm.prank(owner);
         token.mint(user1, mintAmount);
     }
 
     /**
-     * @dev Test mint by non-owner
+     * @dev 测试非所有者铸币
      */
-    function testMintNotOwner() public {
+    function test_MintNotOwner() public {
         uint256 mintAmount = 1000 * (10 ** DECIMALS);
 
-        // Expect transaction to revert (permission denied)
+        // 期望交易回滚（权限拒绝）
         vm.prank(user1);
         vm.expectRevert("Only owner can call this function");
         token.mint(user1, mintAmount);
     }
 
     /**
-     * @dev Test mint to zero address
+     * @dev 测试向零地址铸币
      */
-    function testMintToZeroAddress() public {
+    function test_MintToZeroAddress() public {
         uint256 mintAmount = 1000 * (10 ** DECIMALS);
 
         vm.prank(owner);
@@ -289,13 +289,13 @@ contract SimpleERC20Test is Test {
     }
 
     // =============================================
-    // Ownership Management Tests
+    // 所有权管理测试
     // =============================================
 
     /**
-     * @dev Test ownership transfer
+     * @dev 测试所有权转移
      */
-    function testTransferOwnership() public {
+    function test_TransferOwnership() public {
         vm.prank(owner);
         token.transferOwnership(user1);
 
@@ -307,45 +307,45 @@ contract SimpleERC20Test is Test {
     }
 
     /**
-     * @dev Test ownership transfer by non-owner
+     * @dev 测试非所有者进行所有权转移
      */
-    function testTransferOwnershipNotOwner() public {
+    function test_TransferOwnershipNotOwner() public {
         vm.prank(user1);
         vm.expectRevert("Only owner can call this function");
         token.transferOwnership(user2);
     }
 
     /**
-     * @dev Test ownership transfer to zero address
+     * @dev 测试向零地址转移所有权
      */
-    function testTransferOwnershipToZero() public {
+    function test_TransferOwnershipToZero() public {
         vm.prank(owner);
         vm.expectRevert("New owner is the zero address");
         token.transferOwnership(address(0));
     }
 
     // =============================================
-    // Integration Tests
+    // 集成测试
     // =============================================
 
     /**
-     * @dev Test complete allowance workflow
+     * @dev 测试完整的授权工作流程
      */
-    function testCompleteAllowanceFlow() public {
+    function test_CompleteAllowanceFlow() public {
         uint256 initialBalance = token.balanceOf(owner);
         uint256 approveAmount = 5000 * (10 ** DECIMALS);
         uint256 transfer1 = 2000 * (10 ** DECIMALS);
         uint256 transfer2 = 1500 * (10 ** DECIMALS);
 
-        // Step 1: Approve
+        // 步骤1: 授权
         vm.prank(owner);
         token.approve(spender, approveAmount);
 
-        // Step 2: First transferFrom
+        // 步骤2: 第一次transferFrom
         vm.prank(spender);
-        token.transfrom(owner, user1, transfer1);
+        token.transferFrom(owner, user1, transfer1);
 
-        // Verify state after first transfer
+        // 验证第一次转账后的状态
         assertEq(
             token.balanceOf(user1),
             transfer1,
@@ -357,11 +357,11 @@ contract SimpleERC20Test is Test {
             "Allowance should decrease after first transfer"
         );
 
-        // Step 3: Second transferFrom
+        // 步骤3: 第二次transferFrom
         vm.prank(spender);
-        token.transfrom(owner, user2, transfer2);
+        token.transferFrom(owner, user2, transfer2);
 
-        // Final state verification
+        // 最终状态验证
         assertEq(
             token.balanceOf(user2),
             transfer2,
@@ -380,19 +380,19 @@ contract SimpleERC20Test is Test {
     }
 
     /**
-     * @dev Test batch transfer scenario
+     * @dev 测试批量转账场景
      */
-    function testBatchTransfers() public {
+    function test_BatchTransfers() public {
         uint256 singleTransfer = 100 * (10 ** DECIMALS);
         uint256 batchCount = 5; // 减少数量以避免 gas 限制
 
-        // Prepare test funds
+        // 准备测试资金
         vm.prank(owner);
         token.transfer(user1, singleTransfer * batchCount);
 
-        // Execute batch transfers
+        // 执行批量转账
         for (uint256 i = 0; i < batchCount; i++) {
-            // Generate different recipient addresses
+            // 生成不同的接收者地址
             address recipient = address(
                 uint160(uint256(keccak256(abi.encodePacked(i))))
             );
@@ -400,7 +400,7 @@ contract SimpleERC20Test is Test {
             vm.prank(user1);
             token.transfer(recipient, singleTransfer);
 
-            // Verify each transfer
+            // 验证每笔转账
             assertEq(
                 token.balanceOf(recipient),
                 singleTransfer,
@@ -408,30 +408,30 @@ contract SimpleERC20Test is Test {
             );
         }
 
-        // Verify sender balance is zero
+        // 验证发送者余额为零
         assertEq(token.balanceOf(user1), 0, "Sender balance should be zero");
     }
 
     // =============================================
-    // Fuzz Tests
+    // 模糊测试
     // =============================================
 
     /**
-     * @dev Fuzz test for transfer functionality
-     * @param amount Randomly generated transfer amount
+     * @dev 转账功能的模糊测试
+     * @param amount 随机生成的转账金额
      */
-    function testFuzzTransfer(uint256 amount) public {
-        // Constrain test range: amount must be > 0 and <= initial supply
+    function test_FuzzTransfer(uint256 amount) public {
+        // 约束测试范围：金额必须 > 0 且 <= 初始供应量
         vm.assume(amount > 0 && amount <= INITIAL_SUPPLY * (10 ** DECIMALS));
 
         uint256 initialOwnerBalance = token.balanceOf(owner);
         uint256 initialUser1Balance = token.balanceOf(user1);
 
-        // Execute transfer
+        // 执行转账
         vm.prank(owner);
         token.transfer(user1, amount);
 
-        // Verify balance changes
+        // 验证余额变化
         assertEq(
             token.balanceOf(owner),
             initialOwnerBalance - amount,

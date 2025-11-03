@@ -60,7 +60,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试构造函数是否正确初始化合约
     /// @dev 验证合约名称、符号和所有者设置
-    function testConstructor() public view {
+    function test_Constructor() public view {
         assertEq(nft.name(), NFT_NAME);
         assertEq(nft.symbol(), NFT_SYMBOL);
         assertEq(nft.owner(), owner);
@@ -70,7 +70,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试安全铸造单个 NFT 的基本功能
     /// @dev 验证铸造后 token ID、所有者和 URI 是否正确
-    function testSafeMint() public {
+    function test_SafeMint() public {
         uint256 tokenId = nft.safeMint(recipient, TEST_URI);
 
         assertEq(tokenId, 0);
@@ -85,7 +85,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试安全铸造 NFT 时触发的事件
     /// @dev 验证 TokenMinted 事件是否正确发出
-    function testSafeMintEmitsEvent() public {
+    function test_SafeMintEmitsEvent() public {
         vm.expectEmit(true, true, false, true);
         emit VividNFT.TokenMinted(recipient, 0, TEST_URI);
 
@@ -94,7 +94,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试非所有者无法调用 safeMint
     /// @dev 验证 onlyOwner 修饰符正确工作
-    function testSafeMintOnlyOwner() public {
+    function test_SafeMintOnlyOwner() public {
         vm.prank(user);
         vm.expectRevert();
         nft.safeMint(recipient, TEST_URI);
@@ -102,14 +102,14 @@ contract VividNFTTest is Test {
 
     /// @notice 测试使用空 URI 铸造 NFT 应该失败
     /// @dev 验证空 URI 检查是否正确
-    function testSafeMintEmptyURI() public {
+    function test_SafeMintEmptyURI() public {
         vm.expectRevert("VividNFT: tokenURI cannot be empty");
         nft.safeMint(recipient, "");
     }
 
     /// @notice 测试使用已使用的 URI 铸造 NFT 应该失败
     /// @dev 验证 URI 重复检查是否正确
-    function testSafeMintDuplicateURI() public {
+    function test_SafeMintDuplicateURI() public {
         nft.safeMint(recipient, TEST_URI);
 
         vm.expectRevert("VividNFT: tokenURI already used");
@@ -118,7 +118,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试连续铸造多个 NFT
     /// @dev 验证 token ID 正确递增
-    function testSafeMintMultiple() public {
+    function test_SafeMintMultiple() public {
         uint256 tokenId1 = nft.safeMint(recipient, TEST_URI);
         uint256 tokenId2 = nft.safeMint(recipient, TEST_URI_2);
 
@@ -131,7 +131,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试批量铸造 NFT 的基本功能
     /// @dev 验证批量铸造后所有 NFT 都正确创建
-    function testBatchMint() public {
+    function test_BatchMint() public {
         address[] memory recipients = new address[](3);
         recipients[0] = recipient;
         recipients[1] = user;
@@ -155,7 +155,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试批量铸造时触发的事件
     /// @dev 验证每个铸造操作都触发相应的事件
-    function testBatchMintEmitsEvents() public {
+    function test_BatchMintEmitsEvents() public {
         address[] memory recipients = new address[](2);
         recipients[0] = recipient;
         recipients[1] = user;
@@ -175,7 +175,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试非所有者无法调用 batchMint
     /// @dev 验证 onlyOwner 修饰符正确工作
-    function testBatchMintOnlyOwner() public {
+    function test_BatchMintOnlyOwner() public {
         address[] memory recipients = new address[](1);
         recipients[0] = recipient;
 
@@ -189,7 +189,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试批量铸造时数组长度不匹配应该失败
     /// @dev 验证数组长度检查是否正确
-    function testBatchMintArrayLengthMismatch() public {
+    function test_BatchMintArrayLengthMismatch() public {
         address[] memory recipients = new address[](2);
         recipients[0] = recipient;
         recipients[1] = user;
@@ -203,7 +203,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试批量铸造时使用空数组应该失败
     /// @dev 验证空数组检查是否正确
-    function testBatchMintEmptyArrays() public {
+    function test_BatchMintEmptyArrays() public {
         address[] memory recipients = new address[](0);
         string[] memory tokenURIs = new string[](0);
 
@@ -213,7 +213,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试批量铸造时超过最大批次大小应该失败
     /// @dev 验证批次大小限制是否正确
-    function testBatchMintTooLarge() public {
+    function test_BatchMintTooLarge() public {
         address[] memory recipients = new address[](51);
         string[] memory tokenURIs = new string[](51);
 
@@ -232,7 +232,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试批量铸造时使用重复 URI 应该失败
     /// @dev 验证 URI 重复检查在批量铸造中是否正确工作
-    function testBatchMintDuplicateURI() public {
+    function test_BatchMintDuplicateURI() public {
         address[] memory recipients = new address[](2);
         recipients[0] = recipient;
         recipients[1] = user;
@@ -247,7 +247,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试更新 token URI 的基本功能
     /// @dev 验证 URI 更新后 token 的 URI 是否正确改变
-    function testUpdateTokenURI() public {
+    function test_UpdateTokenURI() public {
         uint256 tokenId = nft.safeMint(recipient, TEST_URI);
         assertEq(nft.tokenURI(tokenId), TEST_URI);
         assertTrue(nft.isURIUsed(TEST_URI));
@@ -262,7 +262,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试更新 token URI 时触发的事件
     /// @dev 验证 TokenURIUpdated 事件是否正确发出
-    function testUpdateTokenURIEmitsEvent() public {
+    function test_UpdateTokenURIEmitsEvent() public {
         uint256 tokenId = nft.safeMint(recipient, TEST_URI);
 
         vm.expectEmit(true, false, false, true);
@@ -273,7 +273,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试非所有者无法调用 updateTokenURI
     /// @dev 验证 onlyOwner 修饰符正确工作
-    function testUpdateTokenURIOnlyOwner() public {
+    function test_UpdateTokenURIOnlyOwner() public {
         uint256 tokenId = nft.safeMint(recipient, TEST_URI);
 
         vm.prank(user);
@@ -283,14 +283,14 @@ contract VividNFTTest is Test {
 
     /// @notice 测试更新不存在的 token URI 应该失败
     /// @dev 验证 token 存在性检查是否正确
-    function testUpdateTokenURINonexistentToken() public {
+    function test_UpdateTokenURINonexistentToken() public {
         vm.expectRevert("VividNFT: token does not exist");
         nft.updateTokenURI(999, TEST_URI);
     }
 
     /// @notice 测试更新 token URI 时使用空 URI 应该失败
     /// @dev 验证空 URI 检查是否正确
-    function testUpdateTokenURIEmptyURI() public {
+    function test_UpdateTokenURIEmptyURI() public {
         uint256 tokenId = nft.safeMint(recipient, TEST_URI);
 
         vm.expectRevert("VividNFT: tokenURI cannot be empty");
@@ -299,7 +299,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试更新 token URI 时使用已使用的 URI 应该失败
     /// @dev 验证 URI 重复检查是否正确
-    function testUpdateTokenURIDuplicateURI() public {
+    function test_UpdateTokenURIDuplicateURI() public {
         uint256 tokenId1 = nft.safeMint(recipient, TEST_URI);
         nft.safeMint(recipient, TEST_URI_2);
 
@@ -309,7 +309,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试 isURIUsed 函数
     /// @dev 验证 URI 使用状态检查是否正确
-    function testIsURIUsed() public {
+    function test_IsURIUsed() public {
         assertFalse(nft.isURIUsed(TEST_URI));
         assertFalse(nft.isURIUsed(TEST_URI_2));
 
@@ -321,7 +321,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试 getCurrentTokenId 函数
     /// @dev 验证 token ID 计数器是否正确递增
-    function testGetCurrentTokenId() public {
+    function test_GetCurrentTokenId() public {
         assertEq(nft.getCurrentTokenId(), 0);
 
         nft.safeMint(recipient, TEST_URI);
@@ -333,7 +333,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试 totalSupply 函数
     /// @dev 验证总供应量是否正确计算
-    function testTotalSupply() public {
+    function test_TotalSupply() public {
         assertEq(nft.totalSupply(), 0);
 
         nft.safeMint(recipient, TEST_URI);
@@ -358,7 +358,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试 exists 函数
     /// @dev 验证 token 存在性检查是否正确
-    function testExists() public {
+    function test_Exists() public {
         assertFalse(nft.exists(0));
 
         uint256 tokenId = nft.safeMint(recipient, TEST_URI);
@@ -368,7 +368,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试销毁 token 时 URI 使用标记被清理
     /// @dev 验证 _update 函数在销毁时正确清理 URI
-    function testBurnClearsURI() public {
+    function test_BurnClearsURI() public {
         uint256 tokenId = nft.safeMint(recipient, TEST_URI);
         assertTrue(nft.isURIUsed(TEST_URI));
 
@@ -383,7 +383,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试销毁后 URI 可以重新使用
     /// @dev 验证 URI 在 token 销毁后可以被重新分配
-    function testBurnAllowsReuseURI() public {
+    function test_BurnAllowsReuseURI() public {
         uint256 tokenId = nft.safeMint(recipient, TEST_URI);
         assertTrue(nft.isURIUsed(TEST_URI));
 
@@ -399,7 +399,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试支持 ERC721 接口
     /// @dev 验证 supportsInterface 函数正确返回接口支持情况
-    function testSupportsInterface() public view {
+    function test_SupportsInterface() public view {
         // ERC165 接口 ID
         assertTrue(nft.supportsInterface(0x01ffc9a7));
         // ERC721 接口 ID
@@ -412,7 +412,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试转移 token 后 URI 保持不变
     /// @dev 验证转移操作不影响 token URI
-    function testTransferPreservesURI() public {
+    function test_TransferPreservesURI() public {
         uint256 tokenId = nft.safeMint(recipient, TEST_URI);
         assertEq(nft.tokenURI(tokenId), TEST_URI);
         assertEq(nft.ownerOf(tokenId), recipient);
@@ -427,7 +427,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试批量铸造的最大批次大小边界
     /// @dev 验证正好 50 个 token 的批量铸造可以成功
-    function testBatchMintMaxSize() public {
+    function test_BatchMintMaxSize() public {
         address[] memory recipients = new address[](50);
         string[] memory tokenURIs = new string[](50);
 
@@ -448,7 +448,7 @@ contract VividNFTTest is Test {
 
     /// @notice 测试批量铸造后 token ID 连续递增
     /// @dev 验证批量铸造的 token ID 分配是否正确
-    function testBatchMintTokenIdSequence() public {
+    function test_BatchMintTokenIdSequence() public {
         address[] memory recipients = new address[](5);
         recipients[0] = recipient;
         recipients[1] = user;

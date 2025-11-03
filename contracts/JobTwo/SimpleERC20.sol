@@ -3,47 +3,54 @@ pragma solidity ^0.8.28;
 
 /**
  * @title SimpleERC20
- * @author wishsnow
- * @dev 一个简单的 ERC20 代币实现，包含增发功能
+ * @dev 简易ERC20代币合约，支持代币增发
  */
 
 contract SimpleERC20 {
-    // 代币基本信息
+    /// @title SimpleERC20 Token Contract
+    /// @author wishsnow
+
+    /// @notice 代币名称
     string public name;
+    /// @notice 代币符号
     string public symbol;
+    /// @notice 小数位数
     uint8 public decimals;
+    /// @notice 总供应量
     uint256 public totalSupply;
 
-    // 合约所有者
+    /// @notice 合约所有者地址
     address public owner;
 
-    // 余额映射
+    /// @dev 账户余额存储映射
     mapping(address => uint256) private _balances;
 
-    // 授权映射 (owner => (spender => amount))
+    /// @dev 授权额度存储映射
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    // 事件定义
+    /// @notice 当代币转账时触发
     event Transfer(address indexed from, address indexed to, uint256 value);
+    /// @notice 当代币授权时触发
     event Approval(
         address indexed owner,
         address indexed spender,
         uint256 value
     );
+    /// @notice 当代币增发时触发
     event Mint(address indexed to, uint256 value);
 
-    // 修饰器：只有所有者可以调用
+    /// @dev 限制只有合约所有者可调用的修饰器
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this function");
         _;
     }
 
     /**
-     * @dev 构造函数，初始化代币
+     * @dev 代币合约初始化
      * @param _name 代币名称
      * @param _symbol 代币符号
-     * @param _decimals 小数位数
-     * @param _initialSupply 初始供应量
+     * @param _decimals 精度位数
+     * @param _initialSupply 初始发行量
      */
     constructor(
         string memory _name,
@@ -56,24 +63,22 @@ contract SimpleERC20 {
         decimals = _decimals;
         owner = msg.sender;
 
-        // 将初始供应量分配给合约部署者
+        // 初始代币分配给部署者
         _mint(msg.sender, _initialSupply * (10 ** decimals));
     }
 
     /**
      * @dev 查询账户余额
-     * @param account 要查询的账户地址
-     * @return 账户余额
+     * @param account 查询地址
      */
     function balanceOf(address account) external view returns (uint256) {
         return _balances[account];
     }
 
     /**
-     * @dev 转账函数
-     * @param to 接收方地址
-     * @param value 转账金额
-     * @return 是否成功
+     * @dev 代币转账
+     * @param to 接收地址
+     * @param value 转账数量
      */
     function transfer(address to, uint256 value) external returns (bool) {
         _transfer(msg.sender, to, value);
@@ -81,10 +86,9 @@ contract SimpleERC20 {
     }
 
     /**
-     * @dev 授权函数
-     * @param spender 被授权方地址
-     * @param value 授权金额
-     * @return 是否成功
+     * @dev 授权额度
+     * @param spender 被授权地址
+     * @param value 授权数量
      */
     function approve(address spender, uint256 value) external returns (bool) {
         _approve(msg.sender, spender, value);
@@ -93,9 +97,8 @@ contract SimpleERC20 {
 
     /**
      * @dev 查询授权额度
-     * @param _owner 授权方地址
-     * @param _spender 被授权方地址
-     * @return 剩余授权额度
+     * @param _owner 授权方
+     * @param _spender 被授权方
      */
     function allowance(
         address _owner,
@@ -105,13 +108,12 @@ contract SimpleERC20 {
     }
 
     /**
-     * @dev 代扣转账函数
-     * @param from 扣款方地址
-     * @param to 接收方地址
-     * @param value 转账金额
-     * @return 是否成功
+     * @dev 授权转账（第三方操作）
+     * @param from 付款地址
+     * @param to 收款地址
+     * @param value 转账数量
      */
-    function transfrom(
+    function transferFrom(
         address from,
         address to,
         uint256 value
@@ -131,16 +133,16 @@ contract SimpleERC20 {
     }
 
     /**
-     * @dev 增发代币函数（仅所有者可调用）
-     * @param to 接收增发代币的地址
-     * @param value 增发金额
+     * @dev 增发代币（仅管理员）
+     * @param to 接收地址
+     * @param value 增发数量
      */
     function mint(address to, uint256 value) external onlyOwner {
         _mint(to, value);
     }
 
     /**
-     * @dev 内部转账函数
+     * @dev 内部转账逻辑
      */
     function _transfer(address from, address to, uint256 value) internal {
         require(from != address(0), "ERC20: transfer from the zero address");
@@ -159,7 +161,7 @@ contract SimpleERC20 {
     }
 
     /**
-     * @dev 内部授权函数
+     * @dev 内部授权逻辑
      */
     function _approve(address _owner, address spender, uint256 value) internal {
         require(_owner != address(0), "ERC20: approve from the zero address");
@@ -170,7 +172,7 @@ contract SimpleERC20 {
     }
 
     /**
-     * @dev 内部增发函数
+     * @dev 内部增发逻辑
      */
     function _mint(address to, uint256 value) internal {
         require(to != address(0), "ERC20: mint to the zero address");
@@ -185,8 +187,8 @@ contract SimpleERC20 {
     }
 
     /**
-     * @dev 转移合约所有权
-     * @param newOwner 新的所有者地址
+     * @dev 转移管理员权限
+     * @param newOwner 新管理员地址
      */
     function transferOwnership(address newOwner) external onlyOwner {
         require(newOwner != address(0), "New owner is the zero address");

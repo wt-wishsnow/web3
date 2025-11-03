@@ -18,13 +18,13 @@ contract JobOneTest is Test {
         jobOne = new JobOne();
     }
 
-    // 测试构造函数
-    function testConstructor() public {
+    /// @dev 测试构造函数
+    function test_Constructor() public view {
         assertEq(jobOne.owner(), owner);
     }
 
-    // 测试投票功能
-    function testVote() public {
+    /// @dev 测试投票功能
+    function test_Vote() public {
         vm.prank(user1);
         jobOne.vote(candidate1);
 
@@ -32,8 +32,8 @@ contract JobOneTest is Test {
         assertEq(jobOne.getCandidateCount(), 1);
     }
 
-    // 测试多次投票给同一个候选人
-    function testMultipleVotes() public {
+    /// @dev 测试多次投票给同一个候选人
+    function test_MultipleVotes() public {
         vm.prank(user1);
         jobOne.vote(candidate1);
 
@@ -44,8 +44,8 @@ contract JobOneTest is Test {
         assertEq(jobOne.getCandidateCount(), 1);
     }
 
-    // 测试投票给多个候选人
-    function testVoteMultipleCandidates() public {
+    /// @dev 测试投票给多个候选人
+    function test_VoteMultipleCandidates() public {
         vm.prank(user1);
         jobOne.vote(candidate1);
 
@@ -57,41 +57,36 @@ contract JobOneTest is Test {
         assertEq(jobOne.getCandidateCount(), 2);
     }
 
-    // 测试重置投票 - 只有owner可以调用
-    function testResetVotes() public {
-        // 先投一些票
+    /// @dev 测试重置投票 - 只有owner可以调用
+    function test_ResetVotes() public {
         vm.prank(user1);
         jobOne.vote(candidate1);
 
         vm.prank(user2);
         jobOne.vote(candidate2);
 
-        // 确认投票存在
         assertEq(jobOne.getCandidateCount(), 2);
 
-        // 只有owner可以重置
         vm.prank(owner);
         jobOne.resetVotes();
 
-        // 确认投票被重置
         assertEq(jobOne.getCandidateCount(), 0);
         assertEq(jobOne.getCandidateVotes(candidate1), 0);
         assertEq(jobOne.getCandidateVotes(candidate2), 0);
     }
 
-    // 测试非owner不能重置投票
-    function testResetVotesNotOwner() public {
+    /// @dev 测试非owner不能重置投票
+    function test_ResetVotesNotOwner() public {
         vm.prank(user1);
         jobOne.vote(candidate1);
 
-        // 非owner尝试重置应该失败
         vm.prank(user1);
         vm.expectRevert("Only owner can call this function");
         jobOne.resetVotes();
     }
 
-    // 测试字符串反转
-    function testReverseString() public {
+    /// @dev 测试字符串反转
+    function test_ReverseString() public view {
         string memory result = jobOne.reverseString("abcde");
         assertEq(result, "edcba");
 
@@ -105,39 +100,34 @@ contract JobOneTest is Test {
         assertEq(result, "a");
     }
 
-    // 测试整数转罗马数字
-    function testInt2Roman() public {
-        // 测试基本数字
+    /// @dev 测试整数转罗马数字
+    function test_Int2Roman() public view {
         assertEq(jobOne.int2Roman(1), "I");
         assertEq(jobOne.int2Roman(4), "IV");
         assertEq(jobOne.int2Roman(9), "IX");
         assertEq(jobOne.int2Roman(58), "LVIII");
         assertEq(jobOne.int2Roman(1994), "MCMXCIV");
 
-        // 测试边界情况
         assertEq(jobOne.int2Roman(0), "");
         assertEq(jobOne.int2Roman(4000), "");
     }
 
-    // 测试罗马数字转整数
-    function testRoman2Int() public {
-        // 测试基本数字
+    /// @dev 测试罗马数字转整数
+    function test_Roman2Int() public view {
         assertEq(jobOne.roman2Int("I"), 1);
         assertEq(jobOne.roman2Int("IV"), 4);
         assertEq(jobOne.roman2Int("IX"), 9);
         assertEq(jobOne.roman2Int("LVIII"), 58);
         assertEq(jobOne.roman2Int("MCMXCIV"), 1994);
 
-        // 测试减法规则
         assertEq(jobOne.roman2Int("CM"), 900);
         assertEq(jobOne.roman2Int("CD"), 400);
         assertEq(jobOne.roman2Int("XC"), 90);
         assertEq(jobOne.roman2Int("XL"), 40);
     }
 
-    // 测试罗马数字和整数的双向转换
-    function testRomanIntRoundTrip() public {
-        // 测试一些数字的双向转换
+    /// @dev 测试罗马数字和整数的双向转换
+    function test_RomanIntRoundTrip() public view {
         int16[] memory testNumbers = new int16[](6);
         testNumbers[0] = 1;
         testNumbers[1] = 4;
@@ -153,8 +143,8 @@ contract JobOneTest is Test {
         }
     }
 
-    // 测试合并有序数组
-    function testMergeSortedArrays() public {
+    /// @dev 测试合并有序数组
+    function test_MergeSortedArrays() public view {
         uint256[] memory arr1 = new uint256[](3);
         arr1[0] = 1;
         arr1[1] = 3;
@@ -180,8 +170,8 @@ contract JobOneTest is Test {
         }
     }
 
-    // 测试合并空数组
-    function testMergeEmptyArrays() public {
+    /// @dev 测试合并空数组
+    function test_MergeEmptyArrays() public view {
         uint256[] memory empty = new uint256[](0);
         uint256[] memory arr = new uint256[](2);
         arr[0] = 1;
@@ -201,8 +191,8 @@ contract JobOneTest is Test {
         assertEq(result3.length, 0);
     }
 
-    // 测试二分查找
-    function testBinarySearch() public {
+    /// @dev 测试二分查找
+    function test_BinarySearch() public view {
         uint256[] memory arr = new uint256[](5);
         arr[0] = 1;
         arr[1] = 3;
@@ -210,26 +200,23 @@ contract JobOneTest is Test {
         arr[3] = 7;
         arr[4] = 9;
 
-        // 测试找到的情况
         assertEq(jobOne.binarySearch(arr, 1), 0);
         assertEq(jobOne.binarySearch(arr, 5), 2);
         assertEq(jobOne.binarySearch(arr, 9), 4);
 
-        // 测试找不到的情况
         assertEq(jobOne.binarySearch(arr, 0), -1);
         assertEq(jobOne.binarySearch(arr, 4), -1);
         assertEq(jobOne.binarySearch(arr, 10), -1);
     }
 
-    // 测试二分查找空数组
-    function testBinarySearchEmptyArray() public {
+    /// @dev 测试二分查找空数组
+    function test_BinarySearchEmptyArray() public view {
         uint256[] memory empty = new uint256[](0);
         assertEq(jobOne.binarySearch(empty, 1), -1);
     }
 
-    // 测试候选人列表管理
-    function testCandidateListManagement() public {
-        // 投票给三个候选人
+    /// @dev 测试候选人列表管理
+    function test_CandidateListManagement() public {
         vm.prank(user1);
         jobOne.vote(candidate1);
 
@@ -239,10 +226,7 @@ contract JobOneTest is Test {
         vm.prank(user1);
         jobOne.vote(candidate3);
 
-        // 验证候选人数量
         assertEq(jobOne.getCandidateCount(), 3);
-
-        // 验证每个候选人的票数
         assertEq(jobOne.getCandidateVotes(candidate1), 1);
         assertEq(jobOne.getCandidateVotes(candidate2), 1);
         assertEq(jobOne.getCandidateVotes(candidate3), 1);
