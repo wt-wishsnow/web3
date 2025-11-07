@@ -1,0 +1,52 @@
+{
+    "name": "布布笑嘻嘻",
+    "description": "可爱的布布打王者荣耀获胜后笑嘻嘻的样子。",
+    "external_url": "https://www.bilibili.com/video/BV1tUu1zSE8h/?spm_id_from=333.337.search-card.all.click&vd_source=f27b0a266bfb28dc64b2c2dfcf49deaf",
+    "image": "ipfs://bafkreidkmx2fc6yfass3o64j2pu5k4zl43ptfwm327y7qz6647w5inf5zq",
+    "attributes": [
+        {
+            "trait_type": "基础形象",
+            "value": "小黄熊崽儿"
+        },
+        {
+            "trait_type": "眼睛",
+            "value": "笑眼弯弯"
+        },
+        {
+            "trait_type": "嘴巴",
+            "value": "哈哈大笑"
+        },
+        {
+            "trait_type": "游戏等级",
+            "value": 6
+        },
+        {
+            "trait_type": "心理承受力",
+            "value": 9.0
+        },
+        {
+            "trait_type": "当前状态",
+            "value": "胜利喜悦"
+        },
+        {
+            "display_type": "boost_number",
+            "trait_type": "水系战力",
+            "value": 50
+        },
+        {
+            "display_type": "boost_percentage",
+            "trait_type": "体力恢复",
+            "value": 15
+        },
+        {
+            "display_type": "number",
+            "trait_type": "世代",
+            "value": 2
+        },
+        {
+            "display_type": "date",
+            "trait_type": "胜利时刻",
+            "value": 1718171200
+        }
+    ]
+}
